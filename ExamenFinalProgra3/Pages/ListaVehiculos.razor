@@ -1,35 +1,53 @@
 ﻿@page "/listadovehiculos"
 @inject HttpClient Http
-
+@using Models;
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@inject NavigationManager NavigationManager
 <PageTitle>Weather</PageTitle>
 
-<h1>Weather</h1>
+<h1>Listado de Vehiculos</h1>
+<h2>Automoviles</h2>
 
-<p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (automoviles == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Cargando...</em></p>
 }
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Número de chasis</th>
+                <th>Marca</th>
+                <th>Fecha de fabricación</th>
+                <th>Número de puertas</th>
+                <th>Tipo de combustible</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var automovil in automoviles)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@automovil.numeroChasis</td>
+                    <td>@automovil.marca</td>
+                    <td>@automovil.fechaFabricacion</td>
+                    <td>@automovil.numeroPuertas</td>
+                    <td>@automovil.tipoCombustible</td>
+                    <td>
+                        <button class="btn btn-warning"
+                                @onclick="@(() => NavigationManager.NavigateTo($"/automovil-editar/{automovil.numeroChasis}"))">
+                            Editar
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger"
+                                @onclick="@(() => NavigationManager.NavigateTo($"/automovil-borrar/{automovil.numeroChasis}"))">
+                            Eliminar
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -37,21 +55,18 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+
+    private List<Automovil> automoviles = new List<Automovil>();
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
+        //Recuperar y validar los datos de libros
+        var savedAutomoviles = localStorage.GetItem<List<Automovil>>("automoviles");
+        if (savedAutomoviles != null)
+        {
+            automoviles = savedAutomoviles;
+        }
 
-    public class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        int contador = automoviles.Count();
     }
 }

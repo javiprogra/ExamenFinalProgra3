@@ -9,7 +9,7 @@ namespace ExamenFinalProgra3.Models
         [Required]
         public string? marca { get; set; }
         [Required]
-        public string? fechaFabricacion { get; set; }
+        public DateTime? fechaFabricacion { get; set; }
 
     }
 }

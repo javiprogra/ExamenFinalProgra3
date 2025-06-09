@@ -1,11 +1,10 @@
-﻿@page "/"
+﻿@page "/automovil-editar/{numeroChasis}"
 
 @using Models;
 @inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject NavigationManager NavigationManager
-<PageTitle>Ingreso de vehiculos</PageTitle>
 
-<h1>Ingresar Automovil</h1>
+<h1>Editar Automovil</h1>
 
 <EditForm Model="@automovil" OnValidSubmit="@GuardarAutomovil">
     <DataAnnotationsValidator />
@@ -54,26 +53,27 @@
 </EditForm>
 
 @code {
+    [Parameter]
+    public string? numeroChasis { get; set; }
+
     private Automovil automovil = new Automovil();
     private List<Automovil> automoviles = new List<Automovil>();
 
     private void GuardarAutomovil()
     {
-        // Save the data into the list
-        automoviles.Add(automovil);
-        // Guardar la lista de starships en LocalStorage como JSON
         localStorage.SetItem("automoviles", automoviles);
         NavigationManager.NavigateTo("/listadovehiculos");
     }
 
     protected override async Task OnInitializedAsync()
     {
-        //Recuperar y validar los datos de libros
         var savedAutomoviles = localStorage.GetItem<List<Automovil>>("automoviles");
         if (savedAutomoviles != null)
         {
             automoviles = savedAutomoviles;
+            automovil = automoviles.FirstOrDefault(a => a.numeroChasis == numeroChasis);
         }
     }
 }
+
 

@@ -1,0 +1,33 @@
+﻿@page "/automovil-borrar/{numeroChasis}"
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
+@using Models;
+
+
+<h3>Eliminar un automovil</h3>
+
+@code {
+    [Parameter]
+    public string? numeroChasis { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        //cargamos todos los catedráticos que ya estaban guardados
+        var automoviles = localStorage.GetItem<List<Automovil>>("automoviles");
+        if (automoviles != null)
+        {
+            //buscamos el catedrático que su colegiado coincida con el colegiado que nos enviaron como parámetro
+            var automovil = automoviles.FirstOrDefault(c => c.numeroChasis == numeroChasis);
+            if (automovil != null)
+            {
+                //borra el objeto de la lista
+                automoviles.Remove(automovil);
+                //vuelve a escribir en el archivo la lista, pues de esta ya se borro el objeto indicado
+                localStorage.SetItem("automoviles", automoviles);
+            }
+        }
+        NavigationManager.NavigateTo("/listadovehiculos");
+    }
+}
+

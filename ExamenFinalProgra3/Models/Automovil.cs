@@ -8,6 +8,5 @@ namespace ExamenFinalProgra3.Models
         public string? numeroPuertas {  get; set; }
         [Required]
         public string? tipoCombustible { get; set; }
-
     }
 }
